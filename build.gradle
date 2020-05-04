@@ -19,6 +19,10 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
 }
 
+jar {
+    from 'COPYING', 'COPYING.LESSER'
+}
+
 test {
     useJUnitPlatform()
     testLogging {
