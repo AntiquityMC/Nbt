@@ -12,13 +12,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public final class ListTag<T extends Tag> implements Tag, List<T> {
-    private final NbtType elementType;
+    private final TagType elementType;
     private final List<T> tags;
 
     /**
      * Constructs a mutable list tag.
      */
-    public ListTag(NbtType elementType) {
+    public ListTag(TagType elementType) {
         this(elementType, new ArrayList<>());
     }
 
@@ -41,22 +41,22 @@ public final class ListTag<T extends Tag> implements Tag, List<T> {
      * @param elementType the element type
      * @param tags the backing list
      */
-    public ListTag(NbtType elementType, List<T> tags) {
+    public ListTag(TagType elementType, List<T> tags) {
         this.elementType = Objects.requireNonNull(elementType, "element type");
         this.tags = Objects.requireNonNull(tags, "tags");
         checkTypes();
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.LIST;
+    public TagType getType() {
+        return TagType.LIST;
     }
 
-    public NbtType getElementType() {
+    public TagType getElementType() {
         return elementType;
     }
 
-    private static NbtType getTagType(List<? extends Tag> tags) {
+    private static TagType getTagType(List<? extends Tag> tags) {
         if (tags.isEmpty()) {
             throw new IllegalArgumentException("Cannot infer tag type from empty list! Specify the tag type manually.");
         }
@@ -86,7 +86,7 @@ public final class ListTag<T extends Tag> implements Tag, List<T> {
 
     public static ListTag<?> read(DataInput input) throws IOException {
         byte elementTypeId = input.readByte();
-        NbtType elementType = NbtType.byId(elementTypeId);
+        TagType elementType = TagType.byId(elementTypeId);
 
         int length = input.readInt();
         ArrayList<Tag> tags = new ArrayList<>(length);

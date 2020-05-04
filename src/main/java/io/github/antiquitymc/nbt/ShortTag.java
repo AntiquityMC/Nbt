@@ -16,8 +16,8 @@ public final class ShortTag implements Tag {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.SHORT;
+    public TagType getType() {
+        return TagType.SHORT;
     }
 
     @Override

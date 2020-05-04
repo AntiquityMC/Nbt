@@ -12,8 +12,8 @@ public final class IntTag implements Tag {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.INT;
+    public TagType getType() {
+        return TagType.INT;
     }
 
     @Override

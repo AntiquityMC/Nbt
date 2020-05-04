@@ -18,8 +18,8 @@ public final class StringTag implements Tag {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.STRING;
+    public TagType getType() {
+        return TagType.STRING;
     }
 
     @Override

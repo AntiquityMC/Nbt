@@ -16,8 +16,8 @@ public final class LongTag implements Tag {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.LONG;
+    public TagType getType() {
+        return TagType.LONG;
     }
 
     @Override

@@ -22,8 +22,8 @@ public final class IntArrayTag implements Tag {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.INT_ARRAY;
+    public TagType getType() {
+        return TagType.INT_ARRAY;
     }
 
     @Override

@@ -16,8 +16,8 @@ public final class DoubleTag implements Tag {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.DOUBLE;
+    public TagType getType() {
+        return TagType.DOUBLE;
     }
 
     @Override

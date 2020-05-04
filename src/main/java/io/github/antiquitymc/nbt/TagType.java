@@ -3,7 +3,7 @@ package io.github.antiquitymc.nbt;
 import java.io.DataInput;
 import java.io.IOException;
 
-public enum NbtType implements NbtDeserializer {
+public enum TagType implements NbtDeserializer {
     END("End", input -> EndTag.INSTANCE),
     BYTE("Byte", ByteTag::read),
     SHORT("Short", ShortTag::read),
@@ -23,13 +23,13 @@ public enum NbtType implements NbtDeserializer {
     private final String name;
     private final NbtDeserializer deserializer;
 
-    NbtType(byte id, String name, NbtDeserializer deserializer) {
+    TagType(byte id, String name, NbtDeserializer deserializer) {
         this.id = id;
         this.name = name;
         this.deserializer = deserializer;
     }
 
-    NbtType(String name, NbtDeserializer deserializer) {
+    TagType(String name, NbtDeserializer deserializer) {
         this.id = (byte) ordinal();
         this.name = name;
         this.deserializer = deserializer;
@@ -49,7 +49,7 @@ public enum NbtType implements NbtDeserializer {
         return name;
     }
 
-    public static NbtType byId(byte id) {
+    public static TagType byId(byte id) {
         if (id < 0) throw new IllegalArgumentException("Negative NBT type: " + id);
         if (id >= values().length) throw new IllegalArgumentException("Unknown NBT type: " + id);
 

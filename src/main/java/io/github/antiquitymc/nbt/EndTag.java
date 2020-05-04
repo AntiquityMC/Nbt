@@ -7,8 +7,8 @@ public enum EndTag implements Tag {
     INSTANCE;
 
     @Override
-    public NbtType getType() {
-        return NbtType.END;
+    public TagType getType() {
+        return TagType.END;
     }
 
     @Override

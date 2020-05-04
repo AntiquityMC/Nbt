@@ -32,8 +32,8 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.COMPOUND;
+    public TagType getType() {
+        return TagType.COMPOUND;
     }
 
     @Override
@@ -47,15 +47,15 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
             value.write(output);
         }
 
-        output.writeByte(NbtType.END.getId());
+        output.writeByte(TagType.END.getId());
     }
 
     public static CompoundTag read(DataInput input) throws IOException {
         HashMap<String, Tag> map = new HashMap<>();
         byte typeId;
 
-        while ((typeId = input.readByte()) != NbtType.END.getId()) {
-            NbtType type = NbtType.byId(typeId);
+        while ((typeId = input.readByte()) != TagType.END.getId()) {
+            TagType type = TagType.byId(typeId);
             String key = input.readUTF();
             Tag tag = type.read(input);
 

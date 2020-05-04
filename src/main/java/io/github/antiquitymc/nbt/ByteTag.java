@@ -16,8 +16,8 @@ public final class ByteTag implements Tag {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.BYTE;
+    public TagType getType() {
+        return TagType.BYTE;
     }
 
     @Override

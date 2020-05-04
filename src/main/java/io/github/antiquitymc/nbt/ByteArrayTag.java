@@ -22,8 +22,8 @@ public final class ByteArrayTag implements Tag {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.BYTE_ARRAY;
+    public TagType getType() {
+        return TagType.BYTE_ARRAY;
     }
 
     @Override
@@ -37,10 +37,7 @@ public final class ByteArrayTag implements Tag {
     public static ByteArrayTag read(DataInput input) throws IOException {
         int length = input.readInt();
         byte[] value = new byte[length];
-
-        for (int i = 0; i < length; i++) {
-            value[i] = input.readByte();
-        }
+        input.readFully(value);
 
         return new ByteArrayTag(value);
     }

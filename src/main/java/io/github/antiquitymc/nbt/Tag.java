@@ -5,11 +5,11 @@ import java.io.IOException;
 
 public interface Tag {
     /**
-     * Gets the {@linkplain NbtType type} of this tag.
+     * Gets the {@linkplain TagType type} of this tag.
      *
      * @return the type
      */
-    NbtType getType();
+    TagType getType();
 
     /**
      * Writes this tag to a data output.

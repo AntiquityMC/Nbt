@@ -16,8 +16,8 @@ public final class FloatTag implements Tag {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.FLOAT;
+    public TagType getType() {
+        return TagType.FLOAT;
     }
 
     @Override

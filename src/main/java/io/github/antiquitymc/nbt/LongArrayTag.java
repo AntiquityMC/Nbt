@@ -22,8 +22,8 @@ public final class LongArrayTag implements Tag {
     }
 
     @Override
-    public NbtType getType() {
-        return NbtType.LONG_ARRAY;
+    public TagType getType() {
+        return TagType.LONG_ARRAY;
     }
 
     @Override
