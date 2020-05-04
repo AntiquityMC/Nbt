@@ -1,20 +1,24 @@
 package io.github.antiquitymc.nbt;
 
-import com.google.common.collect.ImmutableList;
-import io.github.antiquitymc.io.ByteSink;
-import io.github.antiquitymc.io.ByteSource;
-
-import java.util.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-public final class ListTag<T extends Tag<T>> implements Tag<ListTag<T>>, List<T> {
-    private final Tag.Type<T> elementType;
+public final class ListTag<T extends Tag> implements Tag, List<T> {
+    private final NbtType elementType;
     private final List<T> tags;
 
     /**
      * Constructs a mutable list tag.
      */
-    public ListTag(Tag.Type<T> elementType) {
+    public ListTag(NbtType elementType) {
         this(elementType, new ArrayList<>());
     }
 
@@ -37,22 +41,22 @@ public final class ListTag<T extends Tag<T>> implements Tag<ListTag<T>>, List<T>
      * @param elementType the element type
      * @param tags the backing list
      */
-    public ListTag(Tag.Type<T> elementType, List<T> tags) {
+    public ListTag(NbtType elementType, List<T> tags) {
         this.elementType = Objects.requireNonNull(elementType, "element type");
         this.tags = Objects.requireNonNull(tags, "tags");
         checkTypes();
     }
 
     @Override
-    public Tag.Type<ListTag<T>> getType() {
-        return Type.instance();
+    public NbtType getType() {
+        return NbtType.LIST;
     }
 
-    public Tag.Type<T> getElementType() {
+    public NbtType getElementType() {
         return elementType;
     }
 
-    private static <T extends Tag<T>> Tag.Type<T> getTagType(List<T> tags) {
+    private static NbtType getTagType(List<? extends Tag> tags) {
         if (tags.isEmpty()) {
             throw new IllegalArgumentException("Cannot infer tag type from empty list! Specify the tag type manually.");
         }
@@ -69,19 +73,29 @@ public final class ListTag<T extends Tag<T>> implements Tag<ListTag<T>>, List<T>
     }
 
     @Override
-    public void write(ByteSink sink) {
+    public void write(DataOutput output) throws IOException {
         checkTypes();
 
-        sink.write(elementType.getId());
-        NbtImpl.write(sink, tags.size());
+        output.writeByte(elementType.getId());
+        output.writeInt(tags.size());
 
         for (T tag : tags) {
-            tag.write(sink);
+            tag.write(output);
         }
     }
 
-    public ListTag<T> mutableCopy() {
-        return new ListTag<>(new ArrayList<>(tags));
+    public static ListTag<?> read(DataInput input) throws IOException {
+        byte elementTypeId = input.readByte();
+        NbtType elementType = NbtType.byId(elementTypeId);
+
+        int length = input.readInt();
+        ArrayList<Tag> tags = new ArrayList<>(length);
+
+        for (int i = 0; i < length; i++) {
+            tags.add(elementType.read(input));
+        }
+
+        return new ListTag<>(tags);
     }
 
     @Override
@@ -245,42 +259,5 @@ public final class ListTag<T extends Tag<T>> implements Tag<ListTag<T>>, List<T>
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
         return tags.subList(fromIndex, toIndex);
-    }
-
-    public static final class Type<T extends Tag<T>> implements Tag.Type<ListTag<T>> {
-        private static final Type<?> INSTANCE = new Type<>();
-
-        @SuppressWarnings("unchecked")
-        public static <T extends Tag<T>> Type<T> instance() {
-            return (Type<T>) INSTANCE;
-        }
-
-        private Type() {
-        }
-
-        @Override
-        public byte getId() {
-            return LIST;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public ListTag<T> read(ByteSource source) {
-            Tag.Type<T> elementType = (Tag.Type<T>) NbtImpl.readTagType(source);
-            int length = NbtImpl.readInt(source);
-
-            ImmutableList.Builder<T> tags = ImmutableList.builder();
-
-            for (int i = 0; i < length; i++) {
-                tags.add(elementType.read(source));
-            }
-
-            return new ListTag<>(elementType, tags.build());
-        }
-
-        @Override
-        public String toString() {
-            return "List";
-        }
     }
 }

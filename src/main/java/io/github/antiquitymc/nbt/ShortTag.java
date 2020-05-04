@@ -1,17 +1,14 @@
 package io.github.antiquitymc.nbt;
 
-import io.github.antiquitymc.io.ByteSink;
-import io.github.antiquitymc.io.ByteSource;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
-public final class ShortTag implements Tag<ShortTag> {
+public final class ShortTag implements Tag {
     private final short value;
 
     public ShortTag(short value) {
         this.value = value;
-    }
-
-    public ShortTag(int value) {
-        this((short) value);
     }
 
     public short getValue() {
@@ -19,13 +16,17 @@ public final class ShortTag implements Tag<ShortTag> {
     }
 
     @Override
-    public Tag.Type<ShortTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.SHORT;
     }
 
     @Override
-    public void write(ByteSink sink) {
-        NbtImpl.write(sink, value);
+    public void write(DataOutput output) throws IOException {
+        output.writeShort(value);
+    }
+
+    public static ShortTag read(DataInput input) throws IOException {
+        return new ShortTag(input.readShort());
     }
 
     @Override
@@ -44,24 +45,5 @@ public final class ShortTag implements Tag<ShortTag> {
     @Override
     public String toString() {
         return "ShortTag(" + value + ")";
-    }
-
-    public enum Type implements Tag.Type<ShortTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return SHORT;
-        }
-
-        @Override
-        public ShortTag read(ByteSource source) {
-            return new ShortTag(NbtImpl.readShort(source));
-        }
-
-        @Override
-        public String toString() {
-            return "Short";
-        }
     }
 }

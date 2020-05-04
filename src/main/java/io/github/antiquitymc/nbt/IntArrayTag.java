@@ -1,11 +1,11 @@
 package io.github.antiquitymc.nbt;
 
-import io.github.antiquitymc.io.ByteSink;
-import io.github.antiquitymc.io.ByteSource;
-
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Arrays;
 
-public final class IntArrayTag implements Tag<IntArrayTag> {
+public final class IntArrayTag implements Tag {
     private final int[] value;
 
     public IntArrayTag(int[] value) {
@@ -22,17 +22,28 @@ public final class IntArrayTag implements Tag<IntArrayTag> {
     }
 
     @Override
-    public Tag.Type<IntArrayTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.INT_ARRAY;
     }
 
     @Override
-    public void write(ByteSink sink) {
-        NbtImpl.write(sink, value.length);
+    public void write(DataOutput output) throws IOException {
+        output.writeInt(value.length);
 
         for (int i : value) {
-            NbtImpl.write(sink, i);
+            output.writeInt(i);
         }
+    }
+
+    public static IntArrayTag read(DataInput input) throws IOException {
+        int length = input.readInt();
+        int[] value = new int[length];
+
+        for (int i = 0; i < length; i++) {
+            value[i] = input.readInt();
+        }
+
+        return new IntArrayTag(value);
     }
 
     @Override
@@ -51,31 +62,5 @@ public final class IntArrayTag implements Tag<IntArrayTag> {
     @Override
     public String toString() {
         return "IntArrayTag" + Arrays.toString(value);
-    }
-
-    public enum Type implements Tag.Type<IntArrayTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return INT_ARRAY;
-        }
-
-        @Override
-        public IntArrayTag read(ByteSource source) {
-            int length = NbtImpl.readInt(source);
-            int[] value = new int[length];
-
-            for (int i = 0; i < length; i++) {
-                value[i] = NbtImpl.readInt(source);
-            }
-
-            return new IntArrayTag(value);
-        }
-
-        @Override
-        public String toString() {
-            return "IntArray";
-        }
     }
 }

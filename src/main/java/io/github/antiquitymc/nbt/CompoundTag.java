@@ -1,14 +1,17 @@
 package io.github.antiquitymc.nbt;
 
-import com.google.common.collect.ImmutableMap;
-import io.github.antiquitymc.io.ByteSink;
-import io.github.antiquitymc.io.ByteSource;
-
-import java.util.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public final class CompoundTag implements Tag<CompoundTag>, Map<String, Tag<?>> {
-    private final Map<String, Tag<?>> tags;
+public final class CompoundTag implements Tag, Map<String, Tag> {
+    private final Map<String, Tag> tags;
 
     /**
      * Constructs a mutable compound tag.
@@ -24,24 +27,42 @@ public final class CompoundTag implements Tag<CompoundTag>, Map<String, Tag<?>> 
      *
      * @param tags the backing map
      */
-    public CompoundTag(Map<String, Tag<?>> tags) {
+    public CompoundTag(Map<String, Tag> tags) {
         this.tags = Objects.requireNonNull(tags, "tags");
     }
 
     @Override
-    public Tag.Type<CompoundTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.COMPOUND;
     }
 
     @Override
-    public void write(ByteSink sink) {
-        for (Entry<String, Tag<?>> entry : tags.entrySet()) {
-            sink.write(entry.getValue().getType().getId());
-            NbtImpl.write(sink, entry.getKey());
-            entry.getValue().write(sink);
+    public void write(DataOutput output) throws IOException {
+        for (Entry<String, Tag> entry : tags.entrySet()) {
+            String key = entry.getKey();
+            Tag value = entry.getValue();
+
+            output.writeByte(value.getType().getId());
+            output.writeUTF(key);
+            value.write(output);
         }
 
-        sink.write(Tag.Type.END);
+        output.writeByte(NbtType.END.getId());
+    }
+
+    public static CompoundTag read(DataInput input) throws IOException {
+        HashMap<String, Tag> map = new HashMap<>();
+        byte typeId;
+
+        while ((typeId = input.readByte()) != NbtType.END.getId()) {
+            NbtType type = NbtType.byId(typeId);
+            String key = input.readUTF();
+            Tag tag = type.read(input);
+
+            map.put(key, tag);
+        }
+
+        return new CompoundTag(map);
     }
 
     public void putFloat(String key, float value) {
@@ -96,15 +117,15 @@ public final class CompoundTag implements Tag<CompoundTag>, Map<String, Tag<?>> 
 
     //@Nullable
     @Override
-    public Tag<?> put(String key, Tag<?> value) {
+    public Tag put(String key, Tag value) {
         return tags.put(Objects.requireNonNull(key), Objects.requireNonNull(value));
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends Tag<?>> m) {
+    public void putAll(Map<? extends String, ? extends Tag> m) {
         Objects.requireNonNull(m, "map");
 
-        for (Entry<? extends String, ? extends Tag<?>> entry : m.entrySet()) {
+        for (Entry<? extends String, ? extends Tag> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }
@@ -130,12 +151,12 @@ public final class CompoundTag implements Tag<CompoundTag>, Map<String, Tag<?>> 
     }
 
     @Override
-    public Tag<?> get(Object key) {
+    public Tag get(Object key) {
         return tags.get(key);
     }
 
     @Override
-    public Tag<?> remove(Object key) {
+    public Tag remove(Object key) {
         return tags.remove(key);
     }
 
@@ -150,42 +171,12 @@ public final class CompoundTag implements Tag<CompoundTag>, Map<String, Tag<?>> 
     }
 
     @Override
-    public Collection<Tag<?>> values() {
+    public Collection<Tag> values() {
         return tags.values();
     }
 
     @Override
-    public Set<Entry<String, Tag<?>>> entrySet() {
+    public Set<Entry<String, Tag>> entrySet() {
         return tags.entrySet();
-    }
-
-    public enum Type implements Tag.Type<CompoundTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return COMPOUND;
-        }
-
-        @Override
-        public CompoundTag read(ByteSource source) {
-            ImmutableMap.Builder<String, Tag<?>> tags = ImmutableMap.builder();
-
-            Tag.Type<?> type;
-            while ((type = NbtImpl.readTagType(source)) != EndTag.Type.INSTANCE) {
-                String name = NbtImpl.readString(source);
-                Tag<?> tag = type.read(source);
-                System.out.println("\"" + name + "\": " + tag);
-
-                tags.put(name, tag);
-            }
-
-            return new CompoundTag(tags.build());
-        }
-
-        @Override
-        public String toString() {
-            return "Compound";
-        }
     }
 }

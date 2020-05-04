@@ -1,9 +1,10 @@
 package io.github.antiquitymc.nbt;
 
-import io.github.antiquitymc.io.ByteSource;
-import io.github.antiquitymc.io.ByteSink;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
-public final class LongTag implements Tag<LongTag> {
+public final class LongTag implements Tag {
     private final long value;
 
     public LongTag(long value) {
@@ -15,13 +16,17 @@ public final class LongTag implements Tag<LongTag> {
     }
 
     @Override
-    public Tag.Type<LongTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.LONG;
     }
 
     @Override
-    public void write(ByteSink sink) {
-        NbtImpl.write(sink, value);
+    public void write(DataOutput output) throws IOException {
+        output.writeLong(value);
+    }
+
+    public static LongTag read(DataInput input) throws IOException {
+        return new LongTag(input.readLong());
     }
 
     @Override
@@ -40,24 +45,5 @@ public final class LongTag implements Tag<LongTag> {
     @Override
     public String toString() {
         return "LongTag(" + value + ")";
-    }
-
-    public enum Type implements Tag.Type<LongTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return LONG;
-        }
-
-        @Override
-        public LongTag read(ByteSource source) {
-            return new LongTag(NbtImpl.readLong(source));
-        }
-
-        @Override
-        public String toString() {
-            return "Long";
-        }
     }
 }

@@ -1,41 +1,22 @@
 package io.github.antiquitymc.nbt;
 
-import io.github.antiquitymc.io.ByteSource;
-import io.github.antiquitymc.io.ByteSink;
+import java.io.DataOutput;
+import java.io.IOException;
 
-public enum EndTag implements Tag<EndTag> {
+public enum EndTag implements Tag {
     INSTANCE;
 
     @Override
-    public Tag.Type<EndTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.END;
     }
 
     @Override
-    public void write(ByteSink sink) {
+    public void write(DataOutput output) throws IOException {
     }
 
     @Override
     public String toString() {
         return "End";
-    }
-
-    public enum Type implements Tag.Type<EndTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return END;
-        }
-
-        @Override
-        public EndTag read(ByteSource source) {
-            return EndTag.INSTANCE;
-        }
-
-        @Override
-        public String toString() {
-            return "End";
-        }
     }
 }

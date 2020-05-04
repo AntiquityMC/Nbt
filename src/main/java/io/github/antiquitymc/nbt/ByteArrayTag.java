@@ -1,12 +1,11 @@
 package io.github.antiquitymc.nbt;
 
-import io.github.antiquitymc.io.ByteSink;
-import io.github.antiquitymc.io.ByteSource;
-import io.github.antiquitymc.io.ByteVector;
-
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Arrays;
 
-public final class ByteArrayTag implements Tag<ByteArrayTag> {
+public final class ByteArrayTag implements Tag {
     private final byte[] value;
 
     public ByteArrayTag(byte[] value) {
@@ -23,14 +22,27 @@ public final class ByteArrayTag implements Tag<ByteArrayTag> {
     }
 
     @Override
-    public Tag.Type<ByteArrayTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.BYTE_ARRAY;
     }
 
     @Override
-    public void write(ByteSink sink) {
-        NbtImpl.write(sink, value.length);
-        sink.write(value);
+    public void write(DataOutput output) throws IOException {
+        output.writeInt(value.length);
+        for (byte b : value) {
+            output.writeByte(b);
+        }
+    }
+
+    public static ByteArrayTag read(DataInput input) throws IOException {
+        int length = input.readInt();
+        byte[] value = new byte[length];
+
+        for (int i = 0; i < length; i++) {
+            value[i] = input.readByte();
+        }
+
+        return new ByteArrayTag(value);
     }
 
     @Override
@@ -49,28 +61,5 @@ public final class ByteArrayTag implements Tag<ByteArrayTag> {
     @Override
     public String toString() {
         return "ByteArrayTag" + Arrays.toString(value);
-    }
-
-    public enum Type implements Tag.Type<ByteArrayTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return BYTE_ARRAY;
-        }
-
-        @Override
-        public ByteArrayTag read(ByteSource source) {
-            int length = NbtImpl.readInt(source);
-            ByteVector vec = new ByteVector(length);
-            NbtImpl.forceRead(source, vec, length);
-
-            return new ByteArrayTag(vec.toArray());
-        }
-
-        @Override
-        public String toString() {
-            return "ByteArray";
-        }
     }
 }

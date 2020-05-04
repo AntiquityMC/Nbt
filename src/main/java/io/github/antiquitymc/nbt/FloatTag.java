@@ -1,11 +1,10 @@
 package io.github.antiquitymc.nbt;
 
-import io.github.antiquitymc.io.ByteSink;
-import io.github.antiquitymc.io.ByteSource;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
-import java.util.Objects;
-
-public final class FloatTag implements Tag<FloatTag> {
+public final class FloatTag implements Tag {
     private final float value;
 
     public FloatTag(float value) {
@@ -17,13 +16,17 @@ public final class FloatTag implements Tag<FloatTag> {
     }
 
     @Override
-    public Tag.Type<FloatTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.FLOAT;
     }
 
     @Override
-    public void write(ByteSink sink) {
-        NbtImpl.write(sink, Float.floatToIntBits(value));
+    public void write(DataOutput output) throws IOException {
+        output.writeFloat(value);
+    }
+
+    public static FloatTag read(DataInput input) throws IOException {
+        return new FloatTag(input.readFloat());
     }
 
     @Override
@@ -42,24 +45,5 @@ public final class FloatTag implements Tag<FloatTag> {
     @Override
     public String toString() {
         return "FloatTag(" + value + ")";
-    }
-
-    public enum Type implements Tag.Type<FloatTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return FLOAT;
-        }
-
-        @Override
-        public FloatTag read(ByteSource source) {
-            return new FloatTag(Float.intBitsToFloat(NbtImpl.readInt(source)));
-        }
-
-        @Override
-        public String toString() {
-            return "Float";
-        }
     }
 }

@@ -1,11 +1,10 @@
 package io.github.antiquitymc.nbt;
 
-import io.github.antiquitymc.io.ByteSink;
-import io.github.antiquitymc.io.ByteSource;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
-import java.util.Objects;
-
-public final class IntTag implements Tag<IntTag> {
+public final class IntTag implements Tag {
     private final int value;
 
     public IntTag(int value) {
@@ -13,13 +12,17 @@ public final class IntTag implements Tag<IntTag> {
     }
 
     @Override
-    public Tag.Type<IntTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.INT;
     }
 
     @Override
-    public void write(ByteSink sink) {
-        NbtImpl.write(sink, value);
+    public void write(DataOutput output) throws IOException {
+        output.writeInt(value);
+    }
+
+    public static IntTag read(DataInput input) throws IOException {
+        return new IntTag(input.readInt());
     }
 
     @Override
@@ -38,24 +41,5 @@ public final class IntTag implements Tag<IntTag> {
     @Override
     public String toString() {
         return "IntTag(" + value + ")";
-    }
-
-    public enum Type implements Tag.Type<IntTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return INT;
-        }
-
-        @Override
-        public IntTag read(ByteSource source) {
-            return new IntTag(NbtImpl.readInt(source));
-        }
-
-        @Override
-        public String toString() {
-            return "Int";
-        }
     }
 }

@@ -1,11 +1,10 @@
 package io.github.antiquitymc.nbt;
 
-import io.github.antiquitymc.io.ByteSink;
-import io.github.antiquitymc.io.ByteSource;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
-import java.util.Objects;
-
-public final class DoubleTag implements Tag<DoubleTag> {
+public final class DoubleTag implements Tag {
     private final double value;
 
     public DoubleTag(double value) {
@@ -17,13 +16,17 @@ public final class DoubleTag implements Tag<DoubleTag> {
     }
 
     @Override
-    public Tag.Type<DoubleTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.DOUBLE;
     }
 
     @Override
-    public void write(ByteSink sink) {
-        NbtImpl.write(sink, Double.doubleToLongBits(value));
+    public void write(DataOutput output) throws IOException {
+        output.writeDouble(value);
+    }
+
+    public static DoubleTag read(DataInput input) throws IOException {
+        return new DoubleTag(input.readDouble());
     }
 
     @Override
@@ -42,24 +45,5 @@ public final class DoubleTag implements Tag<DoubleTag> {
     @Override
     public String toString() {
         return "DoubleTag(" + value + ")";
-    }
-
-    public enum Type implements Tag.Type<DoubleTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return DOUBLE;
-        }
-
-        @Override
-        public DoubleTag read(ByteSource source) {
-            return new DoubleTag(Double.longBitsToDouble(NbtImpl.readLong(source)));
-        }
-
-        @Override
-        public String toString() {
-            return "Double";
-        }
     }
 }

@@ -1,11 +1,11 @@
 package io.github.antiquitymc.nbt;
 
-import io.github.antiquitymc.io.ByteSink;
-import io.github.antiquitymc.io.ByteSource;
-
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Arrays;
 
-public final class LongArrayTag implements Tag<LongArrayTag> {
+public final class LongArrayTag implements Tag {
     private final long[] value;
 
     public LongArrayTag(long[] value) {
@@ -22,17 +22,28 @@ public final class LongArrayTag implements Tag<LongArrayTag> {
     }
 
     @Override
-    public Tag.Type<LongArrayTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.LONG_ARRAY;
     }
 
     @Override
-    public void write(ByteSink sink) {
-        NbtImpl.write(sink, value.length);
+    public void write(DataOutput output) throws IOException {
+        output.writeInt(value.length);
 
         for (long l : value) {
-            NbtImpl.write(sink, l);
+            output.writeLong(l);
         }
+    }
+
+    public static LongArrayTag read(DataInput input) throws IOException {
+        int length = input.readInt();
+        long[] value = new long[length];
+
+        for (int i = 0; i < length; i++) {
+            value[i] = input.readLong();
+        }
+
+        return new LongArrayTag(value);
     }
 
     @Override
@@ -51,31 +62,5 @@ public final class LongArrayTag implements Tag<LongArrayTag> {
     @Override
     public String toString() {
         return "LongArrayTag" + Arrays.toString(value);
-    }
-
-    public enum Type implements Tag.Type<LongArrayTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return LONG_ARRAY;
-        }
-
-        @Override
-        public LongArrayTag read(ByteSource source) {
-            int length = NbtImpl.readInt(source);
-            long[] value = new long[length];
-
-            for (int i = 0; i < length; i++) {
-                value[i] = NbtImpl.readLong(source);
-            }
-
-            return new LongArrayTag(value);
-        }
-
-        @Override
-        public String toString() {
-            return "LongArray";
-        }
     }
 }

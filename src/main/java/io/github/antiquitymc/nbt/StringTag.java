@@ -1,11 +1,11 @@
 package io.github.antiquitymc.nbt;
 
-import io.github.antiquitymc.io.ByteSink;
-import io.github.antiquitymc.io.ByteSource;
-
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Objects;
 
-public final class StringTag implements Tag<StringTag> {
+public final class StringTag implements Tag {
     private static final short MAX_LENGTH = Short.MAX_VALUE;
     private final String value;
 
@@ -18,13 +18,17 @@ public final class StringTag implements Tag<StringTag> {
     }
 
     @Override
-    public Tag.Type<StringTag> getType() {
-        return Type.INSTANCE;
+    public NbtType getType() {
+        return NbtType.STRING;
     }
 
     @Override
-    public void write(ByteSink sink) {
-        NbtImpl.write(sink, value);
+    public void write(DataOutput output) throws IOException {
+        output.writeUTF(value);
+    }
+
+    public static StringTag read(DataInput input) throws IOException {
+        return new StringTag(input.readUTF());
     }
 
     @Override
@@ -43,24 +47,5 @@ public final class StringTag implements Tag<StringTag> {
     @Override
     public String toString() {
         return "StringTag(" + value + ")";
-    }
-
-    public enum Type implements Tag.Type<StringTag> {
-        INSTANCE;
-
-        @Override
-        public byte getId() {
-            return STRING;
-        }
-
-        @Override
-        public StringTag read(ByteSource source) {
-            return new StringTag(NbtImpl.readString(source));
-        }
-
-        @Override
-        public String toString() {
-            return "String";
-        }
     }
 }
