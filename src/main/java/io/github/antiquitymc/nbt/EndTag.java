@@ -8,7 +8,7 @@ public enum EndTag implements Tag {
 
     @Override
     public TagType getType() {
-        return TagType.END;
+        return TagType.Standard.END;
     }
 
     @Override

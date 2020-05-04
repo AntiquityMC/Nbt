@@ -17,7 +17,7 @@ public final class IntTag implements Tag {
 
     @Override
     public TagType getType() {
-        return TagType.INT;
+        return TagType.Standard.INT;
     }
 
     @Override

@@ -23,7 +23,7 @@ public final class IntArrayTag implements Tag {
 
     @Override
     public TagType getType() {
-        return TagType.INT_ARRAY;
+        return TagType.Standard.INT_ARRAY;
     }
 
     @Override

@@ -23,7 +23,7 @@ public final class LongArrayTag implements Tag {
 
     @Override
     public TagType getType() {
-        return TagType.LONG_ARRAY;
+        return TagType.Standard.LONG_ARRAY;
     }
 
     @Override

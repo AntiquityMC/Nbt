@@ -17,7 +17,7 @@ public final class DoubleTag implements Tag {
 
     @Override
     public TagType getType() {
-        return TagType.DOUBLE;
+        return TagType.Standard.DOUBLE;
     }
 
     @Override

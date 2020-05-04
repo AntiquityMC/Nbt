@@ -23,7 +23,7 @@ public final class ByteArrayTag implements Tag {
 
     @Override
     public TagType getType() {
-        return TagType.BYTE_ARRAY;
+        return TagType.Standard.BYTE_ARRAY;
     }
 
     @Override

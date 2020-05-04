@@ -17,7 +17,7 @@ public final class ShortTag implements Tag {
 
     @Override
     public TagType getType() {
-        return TagType.SHORT;
+        return TagType.Standard.SHORT;
     }
 
     @Override

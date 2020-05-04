@@ -17,7 +17,7 @@ public final class FloatTag implements Tag {
 
     @Override
     public TagType getType() {
-        return TagType.FLOAT;
+        return TagType.Standard.FLOAT;
     }
 
     @Override

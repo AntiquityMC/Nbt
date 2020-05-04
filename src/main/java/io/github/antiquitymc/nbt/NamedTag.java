@@ -13,7 +13,7 @@ public final class NamedTag {
         this.name = Objects.requireNonNull(name, "name");
         this.tag = Objects.requireNonNull(tag, "tag");
 
-        if (tag.getType().getId() == TagType.END.getId()) {
+        if (tag.getType().getStandardEquivalent() == TagType.Standard.END) {
             throw new IllegalArgumentException("End tags cannot be named!");
         }
     }
@@ -27,7 +27,7 @@ public final class NamedTag {
     }
 
     public void write(DataOutput output) throws IOException {
-        output.writeByte(tag.getType().getId());
+        output.writeByte(tag.getType().getStandardEquivalent().getId());
         output.writeUTF(name);
         tag.write(output);
     }
@@ -38,7 +38,7 @@ public final class NamedTag {
     }
 
     public static NamedTag read(byte typeId, DataInput input) throws IOException {
-        TagType type = TagType.byId(typeId);
+        TagType type = TagType.Standard.byId(typeId);
         String name = input.readUTF();
         Tag tag = type.read(input);
         return new NamedTag(name, tag);

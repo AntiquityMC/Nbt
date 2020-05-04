@@ -19,7 +19,7 @@ public final class StringTag implements Tag {
 
     @Override
     public TagType getType() {
-        return TagType.STRING;
+        return TagType.Standard.STRING;
     }
 
     @Override

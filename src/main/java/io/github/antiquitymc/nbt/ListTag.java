@@ -49,7 +49,7 @@ public final class ListTag<T extends Tag> implements Tag, List<T> {
 
     @Override
     public TagType getType() {
-        return TagType.LIST;
+        return TagType.Standard.LIST;
     }
 
     public TagType getElementType() {
@@ -76,7 +76,7 @@ public final class ListTag<T extends Tag> implements Tag, List<T> {
     public void write(DataOutput output) throws IOException {
         checkTypes();
 
-        output.writeByte(elementType.getId());
+        output.writeByte(elementType.getStandardEquivalent().getId());
         output.writeInt(tags.size());
 
         for (T tag : tags) {
@@ -86,7 +86,7 @@ public final class ListTag<T extends Tag> implements Tag, List<T> {
 
     public static ListTag<?> read(DataInput input) throws IOException {
         byte elementTypeId = input.readByte();
-        TagType elementType = TagType.byId(elementTypeId);
+        TagType elementType = TagType.Standard.byId(elementTypeId);
 
         int length = input.readInt();
         ArrayList<Tag> tags = new ArrayList<>(length);
@@ -114,7 +114,7 @@ public final class ListTag<T extends Tag> implements Tag, List<T> {
 
     @Override
     public String toString() {
-        return "List<" + elementType + ">[" + tags.stream().map(Object::toString).collect(Collectors.joining(", ")) + "]";
+        return "List<" + elementType.getName() + ">[" + tags.stream().map(Object::toString).collect(Collectors.joining(", ")) + "]";
     }
 
     @Override

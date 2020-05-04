@@ -25,7 +25,7 @@ class IoTests {
         tag.putInt("Year", 2020);
         CompoundTag nested = new CompoundTag();
         nested.putString("Hello", "world!");
-        ListTag<IntTag> tags = new ListTag<>(TagType.INT);
+        ListTag<IntTag> tags = new ListTag<>(TagType.Standard.INT);
         tags.add(new IntTag(10));
         tags.add(new IntTag(20));
         tags.add(new IntTag(30));

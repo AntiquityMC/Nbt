@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public interface Tag {
     /**
-     * Gets the {@linkplain TagType type} of this tag.
+     * Gets the {@link TagType} of this tag.
      *
      * @return the type
      */

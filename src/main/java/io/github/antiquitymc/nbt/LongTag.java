@@ -17,7 +17,7 @@ public final class LongTag implements Tag {
 
     @Override
     public TagType getType() {
-        return TagType.LONG;
+        return TagType.Standard.LONG;
     }
 
     @Override
