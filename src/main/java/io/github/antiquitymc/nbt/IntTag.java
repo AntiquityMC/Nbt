@@ -11,6 +11,10 @@ public final class IntTag implements Tag {
         this.value = value;
     }
 
+    public int getValue() {
+        return value;
+    }
+
     @Override
     public TagType getType() {
         return TagType.INT;
