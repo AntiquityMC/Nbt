@@ -12,6 +12,10 @@ public final class NamedTag {
     public NamedTag(String name, Tag tag) {
         this.name = Objects.requireNonNull(name, "name");
         this.tag = Objects.requireNonNull(tag, "tag");
+
+        if (tag.getType().getId() == TagType.END.getId()) {
+            throw new IllegalArgumentException("End tags cannot be named!");
+        }
     }
 
     public String getName() {
