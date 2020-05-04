@@ -64,8 +64,8 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
      *
      * @param key the key
      * @return the float value of the key
-     * @throws java.util.NoSuchElementException if the key is not found
-     * @throws ClassCastException               if the key is present with a different type
+     * @throws NoSuchElementException if the key is not found
+     * @throws ClassCastException     if the key is present with a different type
      */
     public float getFloat(String key) {
         if (containsKey(key)) {
@@ -97,8 +97,8 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
      *
      * @param key the key
      * @return the double value of the key
-     * @throws java.util.NoSuchElementException if the key is not found
-     * @throws ClassCastException               if the key is present with a different type
+     * @throws NoSuchElementException if the key is not found
+     * @throws ClassCastException     if the key is present with a different type
      */
     public double getDouble(String key) {
         if (containsKey(key)) {
@@ -130,8 +130,8 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
      *
      * @param key the key
      * @return the byte value of the key
-     * @throws java.util.NoSuchElementException if the key is not found
-     * @throws ClassCastException               if the key is present with a different type
+     * @throws NoSuchElementException if the key is not found
+     * @throws ClassCastException     if the key is present with a different type
      */
     public byte getByte(String key) {
         if (containsKey(key)) {
@@ -163,8 +163,8 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
      *
      * @param key the key
      * @return the short value of the key
-     * @throws java.util.NoSuchElementException if the key is not found
-     * @throws ClassCastException               if the key is present with a different type
+     * @throws NoSuchElementException if the key is not found
+     * @throws ClassCastException     if the key is present with a different type
      */
     public short getShort(String key) {
         if (containsKey(key)) {
@@ -196,8 +196,8 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
      *
      * @param key the key
      * @return the int value of the key
-     * @throws java.util.NoSuchElementException if the key is not found
-     * @throws ClassCastException               if the key is present with a different type
+     * @throws NoSuchElementException if the key is not found
+     * @throws ClassCastException     if the key is present with a different type
      */
     public int getInt(String key) {
         if (containsKey(key)) {
@@ -229,8 +229,8 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
      *
      * @param key the key
      * @return the long value of the key
-     * @throws java.util.NoSuchElementException if the key is not found
-     * @throws ClassCastException               if the key is present with a different type
+     * @throws NoSuchElementException if the key is not found
+     * @throws ClassCastException     if the key is present with a different type
      */
     public long getLong(String key) {
         if (containsKey(key)) {
@@ -258,6 +258,112 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
     }
 
     /**
+     * Gets a character from this compound.
+     *
+     * <p>If the tag represented by the key is a short,
+     * it is converted to a char using unsigned casting.
+     *
+     * @param key the key
+     * @return the character value of the key
+     * @throws NoSuchElementException if the key is not found
+     * @throws ClassCastException     if the key is present with an incompatible type
+     */
+    public char getChar(String key) {
+        if (containsKey(key)) {
+            Tag tag = get(key);
+            if (tag instanceof CharTag) {
+                return ((CharTag) tag).getValue();
+            } else if (tag instanceof ShortTag) {
+                return CharTag.fromShort((ShortTag) tag).getValue();
+            } else {
+                throw new ClassCastException("Incompatible type: " + tag.getType().getName());
+            }
+        } else {
+            throw new NoSuchElementException(key);
+        }
+    }
+
+    /**
+     * Gets a character from this compound.
+     * If missing, returns the default value.
+     *
+     * <p>If the tag represented by the key is a short,
+     * it is converted to a char using unsigned casting.
+     *
+     * @param key          the key
+     * @param defaultValue the default value
+     * @return the character value of the key, or the default if not found
+     * @throws ClassCastException if the key is present with an incompatible type
+     */
+    public char getChar(String key, char defaultValue) {
+        if (containsKey(key)) {
+            Tag tag = get(key);
+            if (tag instanceof CharTag) {
+                return ((CharTag) tag).getValue();
+            } else if (tag instanceof ShortTag) {
+                return CharTag.fromShort((ShortTag) tag).getValue();
+            } else {
+                throw new ClassCastException("Incompatible type: " + tag.getType().getName());
+            }
+        } else {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Gets a boolean from this compound.
+     *
+     * <p>If the tag represented by the key is a byte,
+     * it is converted to a boolean.
+     *
+     * @param key the key
+     * @return the boolean value of the key
+     * @throws NoSuchElementException if the key is not found
+     * @throws ClassCastException     if the key is present with an incompatible type
+     */
+    public boolean getBoolean(String key) {
+        if (containsKey(key)) {
+            Tag tag = get(key);
+            if (tag instanceof BooleanTag) {
+                return ((BooleanTag) tag).getValue();
+            } else if (tag instanceof ByteTag) {
+                return ((ByteTag) tag).getValue() != 0;
+            } else {
+                throw new ClassCastException("Incompatible type: " + tag.getType().getName());
+            }
+        } else {
+            throw new NoSuchElementException(key);
+        }
+    }
+
+    /**
+     * Gets a boolean from this compound.
+     * If missing, returns the default value.
+     *
+     * <p>If the tag represented by the key is a byte,
+     * it is converted to a boolean.
+     *
+     * @param key          the key
+     * @param defaultValue the default value
+     * @return the boolean value of the key, or the default if not found
+     * @throws ClassCastException if the key is present with an incompatible type
+     */
+    public boolean getBoolean(String key, boolean defaultValue) {
+        if (containsKey(key)) {
+            Tag tag = get(key);
+            if (tag instanceof BooleanTag) {
+                return ((BooleanTag) tag).getValue();
+            } else if (tag instanceof ByteTag) {
+                return ((ByteTag) tag).getValue() != 0;
+            } else {
+                throw new ClassCastException("Incompatible type: " + tag.getType().getName());
+            }
+        } else {
+            return defaultValue;
+        }
+    }
+
+    /**
      * Gets a nested compound tag from this compound.
      *
      * @param key the key
@@ -278,6 +384,33 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
      */
     public CompoundTag getOrCreateSubTag(String key) {
         return (CompoundTag) computeIfAbsent(key, it -> new CompoundTag());
+    }
+
+    /**
+     * Gets the tag represented by the key.
+     *
+     * <p>If the value at the key is a standard key that is compatible
+     * with the specified type, it is converted.
+     *
+     * @param key  the key
+     * @param type the wanted type
+     * @return the tag represented by the key or a converted version of it, or null if not found
+     * @throws ClassCastException if the type is incompatible
+     */
+    public Tag get(String key, TagType type) {
+        if (containsKey(key)) {
+            Tag tag = get(key);
+
+            if (tag.getType() == type) {
+                return tag;
+            } else if (tag.getType() == type.getStandardEquivalent()) {
+                return type.fromStandardEquivalent(tag);
+            } else {
+                throw new ClassCastException("Incompatible type: " + tag.getType().getName());
+            }
+        } else {
+            return null;
+        }
     }
 
     public void putFloat(String key, float value) {
@@ -310,6 +443,14 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
 
     public void putList(String key, List<? extends Tag> list) {
         put(key, new ListTag<>(list));
+    }
+
+    public void putBoolean(String key, boolean value) {
+        put(key, new BooleanTag(value));
+    }
+
+    public void putChar(String key, char value) {
+        put(key, new CharTag(value));
     }
 
     @Override

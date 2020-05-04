@@ -2,6 +2,7 @@ package io.github.antiquitymc.nbt;
 
 import java.io.DataInput;
 import java.io.IOException;
+import java.util.function.Function;
 
 public interface TagType extends NbtDeserializer {
     String getName();
@@ -70,6 +71,45 @@ public interface TagType extends NbtDeserializer {
             if (id >= Standard.values().length) throw new IllegalArgumentException("Unknown NBT type: " + id);
 
             return Standard.values()[id];
+        }
+    }
+
+    enum Antiquity implements TagType {
+        BOOLEAN("Boolean", BooleanTag::read, TagType.Standard.BYTE, BooleanTag::fromByte),
+        CHAR("Char", CharTag::read, TagType.Standard.SHORT, CharTag::fromShort),
+        ;
+
+        private final String name;
+        private final NbtDeserializer deserializer;
+        private final Standard equivalent;
+        private final Function<? extends Tag, ? extends Tag> converter;
+
+        <E extends Tag> Antiquity(String name, NbtDeserializer deserializer, TagType.Standard equivalent, Function<E, ? extends Tag> converter) {
+            this.name = name;
+            this.deserializer = deserializer;
+            this.equivalent = equivalent;
+            this.converter = converter;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public TagType.Standard getStandardEquivalent() {
+            return equivalent;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Tag fromStandardEquivalent(Tag standardTag) {
+            return ((Function<Tag, Tag>) converter).apply(standardTag);
+        }
+
+        @Override
+        public Tag read(DataInput input) throws IOException {
+            return deserializer.read(input);
         }
     }
 }
