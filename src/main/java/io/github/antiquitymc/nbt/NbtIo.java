@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * Reads and writes {@linkplain NamedTag named tags} from {@link InputStream} and to {@link OutputStream}.
+ */
 public final class NbtIo {
     private NbtIo() {
     }
