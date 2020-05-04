@@ -95,7 +95,7 @@ public final class ListTag<T extends Tag> implements Tag, List<T> {
             tags.add(elementType.read(input));
         }
 
-        return new ListTag<>(tags);
+        return new ListTag<>(elementType, tags);
     }
 
     @Override

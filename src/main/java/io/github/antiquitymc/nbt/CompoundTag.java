@@ -39,12 +39,7 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
     @Override
     public void write(DataOutput output) throws IOException {
         for (Entry<String, Tag> entry : tags.entrySet()) {
-            String key = entry.getKey();
-            Tag value = entry.getValue();
-
-            output.writeByte(value.getType().getId());
-            output.writeUTF(key);
-            value.write(output);
+            new NamedTag(entry.getKey(), entry.getValue()).write(output);
         }
 
         output.writeByte(TagType.END.getId());
@@ -55,11 +50,8 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
         byte typeId;
 
         while ((typeId = input.readByte()) != TagType.END.getId()) {
-            TagType type = TagType.byId(typeId);
-            String key = input.readUTF();
-            Tag tag = type.read(input);
-
-            map.put(key, tag);
+            NamedTag tag = NamedTag.read(typeId, input);
+            map.put(tag.getName(), tag.getTag());
         }
 
         return new CompoundTag(map);

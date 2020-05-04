@@ -12,19 +12,19 @@ public final class NbtIo {
     private NbtIo() {
     }
 
-    public static CompoundTag read(InputStream in) throws IOException {
-        return CompoundTag.read(new DataInputStream(in));
+    public static NamedTag read(InputStream in) throws IOException {
+        return NamedTag.read(new DataInputStream(in));
     }
 
-    public static CompoundTag readGzipped(InputStream in) throws IOException {
+    public static NamedTag readGzipped(InputStream in) throws IOException {
         return read(new GZIPInputStream(in));
     }
 
-    public static void write(OutputStream out, Tag tag) throws IOException {
+    public static void write(OutputStream out, NamedTag tag) throws IOException {
         tag.write(new DataOutputStream(out));
     }
 
-    public static void writeGzipped(OutputStream out, Tag tag) throws IOException {
+    public static void writeGzipped(OutputStream out, NamedTag tag) throws IOException {
         write(new GZIPOutputStream(out), tag);
     }
 }
