@@ -364,6 +364,17 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
     }
 
     /**
+     * Gets a string from this compound.
+     *
+     * @param key the key
+     * @return the string value, or null if not found
+     * @throws ClassCastException if the key is present with an incompatible type
+     */
+    public /* TODO: @Nullable */ String getString(String key) {
+        return containsKey("key") ? ((StringTag) get(key)).getValue() : null;
+    }
+
+    /**
      * Gets a nested compound tag from this compound.
      *
      * @param key the key
