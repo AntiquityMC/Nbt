@@ -17,6 +17,10 @@ public final class StringTag implements Tag {
         }
     }
 
+    public String getValue() {
+        return value;
+    }
+
     @Override
     public TagType getType() {
         return TagType.Standard.STRING;
