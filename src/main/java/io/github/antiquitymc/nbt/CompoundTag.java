@@ -102,7 +102,7 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
      */
     public double getDouble(String key) {
         if (containsKey(key)) {
-            return ((FloatTag) get(key)).getValue();
+            return ((DoubleTag) get(key)).getValue();
         } else {
             throw new NoSuchElementException(key);
         }
@@ -371,7 +371,7 @@ public final class CompoundTag implements Tag, Map<String, Tag> {
      * @throws ClassCastException if the key is present with an incompatible type
      */
     public /* TODO: @Nullable */ String getString(String key) {
-        return containsKey("key") ? ((StringTag) get(key)).getValue() : null;
+        return containsKey(key) ? ((StringTag) get(key)).getValue() : null;
     }
 
     /**
